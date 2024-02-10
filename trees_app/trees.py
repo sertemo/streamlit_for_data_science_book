@@ -26,6 +26,7 @@ st.bar_chart(df_dbh_grouped)
 st.area_chart(df_dbh_grouped)
 
 # maps
+st.subheader('Maps')
 st.map(trees_df)
 
 st.subheader('Plotly Chart')
@@ -49,3 +50,26 @@ st.pyplot(fig_mpl)
 
 st.write(pd.to_datetime('today'))
 st.write(dt.datetime.today())
+
+from bokeh.plotting import figure
+
+st.subheader('Bokeh Chart')
+scatterplot = figure(title= 'Bokeh Scatterplot')
+scatterplot.scatter(trees_df['dbh'], trees_df['site_order'])
+scatterplot.yaxis.axis_label = 'site_order'
+scatterplot.xaxis.axis_label = 'dbh'
+st.bokeh_chart(scatterplot)
+
+import altair as alt
+
+st.subheader('Altair Chart')
+df_caretaker = trees_df.groupby(['caretaker']).count()['tree_id'].reset_index()
+df_caretaker.columns = ['caretaker', 'tree_count']
+fig = alt.Chart(df_caretaker).mark_bar().encode(x='caretaker', y='tree_count')
+st.altair_chart(fig)
+
+# Otra opción
+fig = alt.Chart(trees_df).mark_bar().encode(x='caretaker', y='count(*):Q')
+st.altair_chart(fig)
+
+# Pydeck para geolocalización
