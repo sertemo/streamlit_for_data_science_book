@@ -48,8 +48,8 @@ ax_mpl = plt.hist(trees_df['age'])
 plt.xlabel('Age ( Days)')
 st.pyplot(fig_mpl)
 
-st.write(pd.to_datetime('today'))
-st.write(dt.datetime.today())
+st.write(pd.to_datetime('today').strftime('%Y-%m-%d %H:%M:%S'))
+st.write(dt.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
 
 from bokeh.plotting import figure
 
@@ -73,3 +73,35 @@ fig = alt.Chart(trees_df).mark_bar().encode(x='caretaker', y='count(*):Q')
 st.altair_chart(fig)
 
 # Pydeck para geolocalización
+import pydeck as pdk
+# Tenemos que quitar los nulls cuando queramos usar pydeck
+trees_df = pd.read_csv('trees.csv')
+trees_df.dropna(how='any', inplace=True)
+trees_df.columns
+sf_initial_view = pdk.ViewState(
+    latitude=37.77,
+    longitude=-122.4,
+    zoom=11,
+)
+# Creamos una layer
+sp_layer = pdk.Layer(
+    'ScatterplotLayer',
+    data=trees_df,
+    get_position=['longitude', 'latitude'],
+    get_radius=30,
+    auto_highlight=True,
+    pickable=True,
+)
+#Creamos otra layer
+hx_layer = pdk.Layer(
+    'HexagonLayer',
+    data=trees_df,
+    get_position=['longitude', 'latitude'],
+    radius=100,
+    extruded=True,
+)
+st.pydeck_chart(pdk.Deck(
+    initial_view_state=sf_initial_view,
+    map_style='mapbox://styles/mapbox/light-v9',
+    layers=[sp_layer, hx_layer]
+))
