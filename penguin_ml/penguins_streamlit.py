@@ -34,6 +34,7 @@ def get_model_and_mapping() -> tuple[RandomForestClassifier, pd.Index]:
 
 if penguin_file is None:
     rfc, unique_penguin_mapping = get_model_and_mapping()
+    penguin_df = pd.read_csv('penguins.csv')
 
 else:
     penguin_df = pd.read_csv(penguin_file)
@@ -95,7 +96,7 @@ if predecir:
 st.divider()
 st.write("""
         Hemos usado un modelo Random Forest para predecir las especies
-            Las varaibles usadas están ranqueadas por importancia.
+            Las variables usadas están ranqueadas por importancia.
         """)
 st.image('feature_importance.png')
 st.write("""Debajo se detallan los histogramas para cada variable continua separada

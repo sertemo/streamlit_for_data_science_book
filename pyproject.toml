@@ -13,6 +13,10 @@ seaborn = "^0.13.2"
 plotly = "^5.18.0"
 bokeh = "2.4.3"
 scikit-learn = "^1.4.0"
+torch = "^2.2.0"
+transformers = "^4.37.2"
+python-dotenv = "^1.0.1"
+openai = "^1.12.0"
 
 
 [build-system]
