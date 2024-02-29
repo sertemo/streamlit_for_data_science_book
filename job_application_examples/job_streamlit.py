@@ -29,6 +29,11 @@ the input airport.' There are three steps here:
 4. Return sorted list of airports Distance
 """
 
+password = st.text_input('Enter the password provided', type='password')
+if password != st.secrets['password']['app_password']:
+    st.error('Wrong password')
+    st.stop()
+
 airport_distance_df = pd.read_csv('airport_location.csv')
 st.code("""
         # Load necesarry data
@@ -178,4 +183,47 @@ instead of the Haversine distance, which is much more accurate but cumbersome to
 2. I would vectorize this function and make it more efficient overall.
 Because this dataset is only 7 rows long, it wasn't particularly important,
 but if this was a crucial function that was run in production we would want to vectorize it for speed.
+"""
+
+st.divider()
+
+st.subheader("Question 2: Representation")
+
+"""
+For this transformation, there are a few things
+that I would start with. First, I would have to define
+what a unique trip actually was. In order to do this, I would
+group by the origin, the destination, and the departure date
+(for the departure date, often customers will change around
+this departure date, so we should group by the date plus or
+minus at least 1 buffer day to capture all the correct dates).
+Additionally, we can see that often users search from an entire city,
+and then shrink that down into a specific airport. So we should also
+consider a group of individual queries from cities and airports in the
+same city, as the same search, and do the same for destination.
+From that point, we should add these important columns to each unique search.
+"""
+
+example_row = {
+    "userid": 98593,
+    "number_of_queries": 5,
+    "round_trip": 1,
+    "distance": 893,
+    "number_unique_destinations": 5,
+    "number_unique_origins": 1,
+    "datetime_first_searched": "2015-01-09",
+    "average_length_of_stay": 5,
+    "length_of_search": 4,
+}
+
+st.write(pd.DataFrame(data=example_row, index=[0]))
+"""
+For answering the second part of the question, we should take the euclidian distance
+on two normalized vectors. There are two solid options for comparing two
+entirely numeric rows, the euclidian distance (which is just the straight line
+difference between two values), and the manhattan distance (think of this as the
+distance traveled if you had to use city blocks to travel diagonally across manhattan).
+Because we have normalized data, and the data is not high dimensional or sparse, I
+would recommend using the euclidian distance to start off. This distance would tell
+us how similar two trips were.
 """
